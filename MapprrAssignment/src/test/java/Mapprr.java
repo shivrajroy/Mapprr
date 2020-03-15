@@ -38,13 +38,10 @@ public class Mapprr {
 			
 		}catch(Exception exp)
 		{
-		System.out.println(exp.getCause());
-		System.out.println(exp.getMessage());
+		//System.out.println(exp.getCause());
+		//System.out.println(exp.getMessage());
 		exp.printStackTrace();
 		}
-		
-		
-
 	}
 	
 	public static void openMapprr() throws Exception
@@ -55,62 +52,41 @@ public class Mapprr {
 		cap.setCapability("udid", "8d4dc0f182d3");
 		cap.setCapability("platformName", "Android");
 		cap.setCapability("platformVersion", "9");
-	//	cap.setCapability("appPackage",  "com.imdb.mobile");
-	//	cap.setCapability("appActivity", "com.imdb.mobile.landingpage.LandingPagesActivity");
 		cap.setCapability("appPackage",  "com.bts.consumer");
 		cap.setCapability("appActivity",  "com.bts.consumer.SplashUiBrandLogo");
 		cap.setCapability("noReset", "True");
-	//	cap.setCapability("appActivity",  "com.bts.consumer.onboardingPages.IntroActivity");
-		
 		
 		URL url = new URL("http://127.0.0.1:4723/wd/hub");
 		
 		driver = new AppiumDriver<MobileElement>(url,cap);
-		//driver2 = (AndroidDriver) new AndroidDriver<MobileElement>(url,cap);
 		
 		System.out.println("Application Started....");
 		
-		//MobileElement explore = (MobileElement) driver.findElement(By.id("com.bts.consumer:id/tv_explore"));
-		//explore.click();
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		
-//		scrollToAnElementByText(driver,"Meat");
-//		scrollAndClick("Sampradaya Foods");
-		
-		while(getItemSampradayaFoods().size() == 0) {
+		while(getFourthStore().size() == 0) {
 			scrollDown();
 		}
 		
-		if(getItemSampradayaFoods().size() > 0) {
-			getItemSampradayaFoods().get(0).click();
+		if(getFourthStore().size() > 0) {
+			getFourthStore().get(0).click();
 		}
 		Thread.sleep(4000);
 		
-		getSampradayaFoodsFromList().click();
-		getProduct().click();
-		proceedToCheckout().click();
+		getStoreFromList().click();
+		WebElement product=getProduct();
 		
-		System.out.println("element found");
-		
-		
-		
-//		AndroidElement list = (AndroidElement)driver.findElement(By.id("com.bts.consumer:id/tvHeading"));
-//		//com.bts.consumer:id/category_text
-//		
-//		MobileElement listitem =(MobileElement) driver.findElement(MobileBy.AndroidUIAutomator(
-//				"new UiScrollable(new UiSelector()).scrollIntoView("+ "new UiSelector().text(\"Exclusive Stores\"));"));
-//		
-		//WebElement fourthStore = driver.findElement(By.xpath("(//android.widget.TextView[@Text='PROCEED TO CHECKOUT']"])"));
-		
-		
-		//fourthStore.click();
-		//WebElement fourthStoreLoc = driver.findElement(By.xpath("//com.bts.consumer:id/storeLoc[@Text='Ameerpet']"));
-		
-		
-		
-	}
-	
-	
+		if (product == null)
+		{
+			System.out.println("Store is closed or product is unavailable, please try again later");
+		}
+		else {
+			
+			getProduct().click();
+			proceedToCheckout().click();
+		}
+		}
+
 	public static void scrollDown() {
 		Dimension dimension = driver.manage().window().getSize();
 		Double scrollHeightStart = dimension.getHeight() * 0.5;
@@ -127,24 +103,26 @@ public class Mapprr {
 		
 	}
 	
-//	public static List<WebElement> getItemSampradayaFoods() {
-//		return driver.findElements(By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.RelativeLayout/android.view.ViewGroup/androidx.recyclerview.widget.RecyclerView/android.widget.LinearLayout[1]/androidx.recyclerview.widget.RecyclerView/android.widget.RelativeLayout[4]/android.view.ViewGroup/android.widget.TextView[1]"));
-//	}
 	
-	public static List<WebElement> getItemSampradayaFoods() {
+	public static List<WebElement> getFourthStore() {
 		return driver.findElements(By.xpath("//android.view.ViewGroup[@instance='4']/android.widget.TextView[1]"));
 	}
 	
-//	public static WebElement getSampradayaFoodsFromList() {
-//		return driver.findElement(By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.view.ViewGroup/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.LinearLayout/androidx.recyclerview.widget.RecyclerView/android.widget.LinearLayout[1]/android.widget.RelativeLayout/android.widget.LinearLayout/android.widget.TextView[1]"));
-//	}
-	
-	public static WebElement getSampradayaFoodsFromList() {
+	public static WebElement getStoreFromList() {
 		return driver.findElement(By.xpath("//android.widget.LinearLayout[@instance='5']/android.widget.TextView[1]"));
 	}
 	
 	public static WebElement getProduct() {
-		return driver.findElement(By.xpath("//android.widget.LinearLayout[@instance='3']/android.widget.ImageButton[2]"));
+		
+		
+		try {
+			WebElement checkStoreOpen = driver.findElement(By.xpath("//android.widget.LinearLayout[@instance='3']/android.widget.ImageButton[2]"));
+			
+			return checkStoreOpen;
+		}catch(Exception e)
+		{	
+			return null;
+		}
 	}
 	
 	
@@ -157,9 +135,6 @@ public class Mapprr {
                 ".scrollIntoView(new UiSelector().text(\"" + text + "\"));"));
 }
 
-//	public static void scrollAndClick(String visibleText) {
-//	     driver.findElement(MobileBy.AndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\""+visibleText+"\").instance(0))")).click();
-//	        }
 	    }
 		
 	
